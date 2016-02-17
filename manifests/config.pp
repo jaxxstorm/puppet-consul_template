@@ -80,6 +80,14 @@ class consul_template::config (
     group  => $consul_template::group,
     mode   => $consul_template::config_mode,
     notify => Service['consul-template'],
+  } ->
+  file { 'consul additional config.json':
+    ensure  => present,
+    path    => "${consul::config_dir}/other-config.json",
+    owner   => $consul::user,
+    group   => $consul::group,
+    mode    => $consul::config_mode,
+    content => consul_template_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
 
 }
