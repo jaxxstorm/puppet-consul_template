@@ -7,6 +7,7 @@ class consul_template::config (
   $consul_port,
   $consul_token,
   $consul_retry,
+  $config_hash,
   $purge = true,
 ) {
 
@@ -83,11 +84,11 @@ class consul_template::config (
   } ->
   file { 'consul additional config.json':
     ensure  => present,
-    path    => "${consul::config_dir}/other-config.json",
-    owner   => $consul::user,
-    group   => $consul::group,
-    mode    => $consul::config_mode,
-    content => consul_template_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    path    => "${consul_template::config_dir}/other-config.json",
+    owner   => $consul_template::user,
+    group   => $consul_template::group,
+    mode    => $consul_template::config_mode,
+    content => consul_template_sorted_json($config_hash, $consul_template::pretty_config, $consul_template::pretty_config_indent),
   }
 
 }

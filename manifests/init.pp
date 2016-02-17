@@ -130,6 +130,10 @@ class consul_template (
   validate_bool($manage_user)
   validate_bool($manage_group)
   validate_hash($watches)
+  validate_hash($config_hash)
+
+  $config_hash_real = deep_merge($config_defaults, $config_hash)
+  validate_hash($config_hash_real)
 
   $real_download_url = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
 
@@ -144,6 +148,7 @@ class consul_template (
     consul_port  => $consul_port,
     consul_token => $consul_token,
     consul_retry => $consul_retry,
+    config_hash  => $config_hash_real,
     purge        => $purge_config_dir,
   } ~>
   class { '::consul_template::service': } ->
