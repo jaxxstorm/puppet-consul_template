@@ -105,13 +105,6 @@ class consul_template (
   $logrotate_files        = 4,
   $logrotate_on           = false,
   $logrotate_period       = 'daily',
-  $vault_enabled          = false,
-  $vault_address          = '',
-  $vault_token            = '',
-  $vault_ssl              = true,
-  $vault_ssl_verify       = true,
-  $vault_ssl_cert         = '',
-  $vault_ssl_ca_cert      = '',
   $data_dir               = '',
   $user                   = $consul_template::params::user,
   $group                  = $consul_template::params::group,
@@ -134,6 +127,8 @@ class consul_template (
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
+
+
 
   $real_download_url = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
 
