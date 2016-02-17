@@ -28,7 +28,7 @@ class consul_template::config (
     group   => $consul_template::group,
     mode    => '0755',
   } ->
-  file { 'consul additional config.json':
+  file { 'consul-template config.json':
     ensure  => present,
     path    => "${consul_template::config_dir}/config.json",
     owner   => $consul_template::user,
