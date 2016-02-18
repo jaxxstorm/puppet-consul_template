@@ -6,6 +6,9 @@ describe 'consul_template::watch', :type => :define do
   let(:title) { 'example' }
 
   context 'without a template' do
+    let(:params) {{
+      :destination => '/var/my_file',
+    }}
     it { expect { should compile }.to raise_error(/Must pass template/) }
   end
 
