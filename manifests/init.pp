@@ -78,10 +78,6 @@ class consul_template (
   $manage_service         = true,
   $init_style             = $consul_template::params::init_style,
   $log_level              = $consul_template::params::log_level,
-  $logrotate_compress     = 'nocompress',
-  $logrotate_files        = 4,
-  $logrotate_on           = false,
-  $logrotate_period       = 'daily',
   $user                   = $consul_template::params::user,
   $group                  = $consul_template::params::group,
   $manage_user            = $consul_template::params::manage_user,
@@ -128,12 +124,4 @@ class consul_template (
   } ->
   class { '::consul_template::service': } ->
   anchor { '::consul_template::end': }
-
-  class { '::consul_template::logrotate':
-    logrotate_compress => $logrotate_compress,
-    logrotate_files    => $logrotate_files,
-    logrotate_on       => $logrotate_on,
-    logrotate_period   => $logrotate_period,
-    before             => Anchor['::consul_template::end'],
-  }
 }
