@@ -7,7 +7,7 @@ class consul_template::config (
   $purge = true,
 ) {
 
-  file { [$consul_template::config_dir, "${consul_template::config_dir}/config"]:
+  file { [$consul_template::config_dir]:
     ensure  => 'directory',
     purge   => $purge,
     recurse => $purge,
