@@ -2,15 +2,6 @@
 #
 class consul_template::install {
 
-  if ! empty($consul_template::data_dir) {
-    file { $consul_template::data_dir:
-      ensure => 'directory',
-      owner  => $consul_template::user,
-      group  => $consul_template::group,
-      mode   => '0755',
-    }
-  }
-
   if $consul_template::install_method == 'url' {
 
     include staging

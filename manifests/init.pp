@@ -105,12 +105,6 @@ class consul_template (
   $config_hash_real = deep_merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
 
-  if $config_hash_real['data_dir'] {
-    $data_dir = $config_hash_real['data_dir']
-  } else {
-    $data_dir = undef
-  }
-
   $real_download_url = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
 
   if $watches {
