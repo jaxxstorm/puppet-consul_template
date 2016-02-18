@@ -7,7 +7,7 @@ class consul_template::config (
   $purge = true,
 ) {
 
-  file { [$consul_template::config_dir]:
+  file { $consul_template::config_dir:
     ensure  => 'directory',
     purge   => $purge,
     recurse => $purge,
@@ -15,6 +15,14 @@ class consul_template::config (
     group   => $consul_template::group,
     mode    => '0755',
   } ->
+  file { "${consul_template::config_dir}/templates":
+    ensure  => 'directory',
+    purge   => $purge,
+    recurse => $purge,
+    owner   => $consul_template::user,
+    group   => $consul_template::group,
+    mode    => '0755',
+  } -> 
   file { 'consul-template config.json':
     ensure  => present,
     path    => "${consul_template::config_dir}/config.json",

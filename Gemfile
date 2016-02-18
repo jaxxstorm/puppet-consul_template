@@ -10,7 +10,6 @@ group :test do
   gem "puppetlabs_spec_helper"
   gem "metadata-json-lint"
   gem "puppet-syntax"
-  gem "puppetlabs_spec_helper"
   gem "hiera"
   gem "hiera-puppet-helper"
 end

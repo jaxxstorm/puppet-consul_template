@@ -4,46 +4,51 @@
 # This is a single instance of a configuration file to watch
 # for changes in Consul and update the local file
 define consul_template::watch (
-  $template = undef,
-  $template_vars = {},
-  $source = undef,
+  $ensure     = present,
+  $template,
   $destination,
-  $command,
+  $command = undef,
+  $perms = undef,
+  $backup = undef,
 ) {
   include consul_template
 
-  if $template == undef and $source == undef {
-    err ('Specify either template or source parameter for consul_template::watch')
+  if ( ! $template ) {
+    fail ('You must pass a ctmpl file for consul-template to read')
   }
 
-  if $template != undef and $source != undef {
-    err ('Specify either template or source parameter for consul_template::watch - but not both')
+  if ( ! $destination ) {
+    fail ('You must pass a destination file for consul-template to write')
   }
 
-  if $template != undef {
-    file { "${consul_template::config_dir}/${name}.ctmpl":
-      ensure  => present,
-      owner   => $consul_template::user,
-      group   => $consul_template::group,
-      mode    => $consul_template::config_mode,
-      content => template($template),
-      before  => Concat::Fragment["${name}.ctmpl"],
-      notify  => Service['consul-template'],
-    }
+  if ($backup) {
+    validate_bool($backup)
   }
 
-  if $source != undef {
-    $source_name = $source
-    $frag_name   = $source
-  } else {  
-    $source_name = "${consul_template::config_dir}/${name}.ctmpl"
-    $frag_name   = "${name}.ctmpl"
+  $watch_hash = {
+    'source'      =>  "${consul_template::config_dir}/templates/${name}.ctmpl",
+    'destination' =>  $destination,
+    'command'     =>  $command,
+    'perms'       =>  $perms,
+    'backup'      =>  $backup,
   }
 
-  concat::fragment { "${frag_name}":
-    target  => 'consul-template/config.json',
-    content => "template {\n  source = \"${source_name}\"\n  destination = \"${destination}\"\n  command = \"${command}\"\n}\n\n",
-    order   => '10',
-    notify  => Service['consul-template']
+  file { "${consul_template::config_dir}/templates/${name}.ctmpl":
+    ensure  => $ensure,
+    owner   => $consul_template::user,
+    group   => $consul_template::group,
+    mode    => $consul_template::config_mode,
+    content => template($template),
+  }->
+  file { "${consul_template::config_dir}/watch_${name}.json":
+    ensure  => $ensure,
+    owner   => $consul_template::user,
+    group   => $consul_template::group,
+    mode    => $consul_template::config_mode,
+    content => consul_template_sorted_json($watch_hash, $consul_template::pretty_config, $consul_template::pretty_config_indent),
+    notify  => Service['consul-template'],
   }
+
+
+
 }

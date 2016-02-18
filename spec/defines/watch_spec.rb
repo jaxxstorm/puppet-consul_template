@@ -2,53 +2,54 @@ require 'spec_helper'
 
 
 describe 'consul_template::watch', :type => :define do
-  context 'supported operating systems' do
-    ['Debian', 'RedHat'].each do |osfamily|
-      describe "consul_template::watch define on OS family #{osfamily}" do
-        let(:title) { 'test_watcher' }
-        let(:params) {{
-          :destination => '/var/tmp/consul_template',
-          :command => '/bin/test',
-        }}
-        let(:facts) {{
-          :osfamily       => osfamily,
-          :concat_basedir => '/foo',
-          :path           => '/bin:/sbin:/usr/bin:/usr/sbin',
-          :architecture   => 'x86_64'
-        }}
 
-        it { is_expected.to compile.with_all_deps }
+  let(:title) { 'example' }
 
-        it { is_expected.to contain_class('consul_template') }
-        it { is_expected.to contain_concat__fragment('test_watcher.ctmpl') }
-
-      end
-    end
+  context 'without a template' do
+    it { expect { should compile }.to raise_error(/Must pass template/) }
   end
-  context 'Setting template and template_vars' do
-    ['Debian', 'RedHat'].each do |osfamily|
-      describe "consul_template::watch define on OS family #{osfamily}" do
-        let(:title) { 'test_watcher' }
-        let(:params) {{
-          :template => 'consul_template_spec/test_template',
-          :template_vars => { 'foo' => 'bar' },
-          :destination => '/var/tmp/consul_template',
-          :command => '/bin/test',
-        }}
-        let(:facts) {{
-          :osfamily       => osfamily,
-          :concat_basedir => '/foo',
-          :path           => '/bin:/sbin:/usr/bin:/usr/sbin',
-          :architecture   => 'x86_64'
-        }}
 
-        it { is_expected.to compile.with_all_deps }
+  context 'without a destination' do
+    let(:params) {{
+      :template => 'consul_template_spec/test_template',
+    }}
+    it { expect { should compile }.to raise_error(/Must pass destination/) }
+  end
 
-        it { is_expected.to contain_file('/etc/consul-template/test_watcher.ctmpl').with(:content => /^bar$/)}
-        it { is_expected.to contain_concat__fragment('test_watcher.ctmpl') }
+  context 'create a template' do
+    let(:params) {{
+      :template    => 'consul_template_spec/test_template',
+      :destination => '/var/my_file',
+    }}
+    it { should contain_file('/etc/consul-template/templates/example.ctmpl').with(:ensure => 'present') }
+  end
 
-      end
-    end
+  context 'standard config file' do
+    let(:params) {{
+      :template    => 'consul_template_spec/test_template',
+      :destination => '/var/my_file', 
+    }}
+    it { should contain_file('/etc/consul-template/watch_example.json') \
+      .with_content(/"source" *: *"\/etc\/consul-template\/templates\/example.ctmpl"/) \
+      .with_content(/"destination" *: *"\/var\/my_file"/) 
+    }
+  end
+
+  context 'with additional options' do
+    let(:params) {{
+      :template    => 'consul_template_spec/test_template',
+      :destination => '/var/my_file',
+      :command     => 'reload',
+      :perms       => 0777,
+      :backup      => true,
+    }}
+    it { should contain_file('/etc/consul-template/watch_example.json') \
+      .with_content(/"source" *: *"\/etc\/consul-template\/templates\/example.ctmpl"/) \
+      .with_content(/"destination" *: *"\/var\/my_file"/) \
+      .with_content(/"command" *: *"reload"/) \
+      .with_content(/"perms" *: *511/) \
+      .with_content(/"backup" *: *true/)
+    }
   end
 
 end
