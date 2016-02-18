@@ -1,5 +1,8 @@
 #consul_template for Puppet
 
+### Important Note
+This module has been forked from [gdhbaston's](https://github.com/gdhbashton/puppet-consul_template) and makes lots of changes. I wouldn't recommend switching without serious testing
+
 ##Installation
 
 ###What This Module Affects
