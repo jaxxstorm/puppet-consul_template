@@ -25,12 +25,18 @@ define consul_template::watch (
     validate_bool($backup)
   }
 
-  $watch_hash = {
+
+  $template_hash = {
     'source'      =>  "${consul_template::config_dir}/templates/${name}.ctmpl",
     'destination' =>  $destination,
     'command'     =>  $command,
     'perms'       =>  $perms,
     'backup'      =>  $backup,
+  }
+  validate_hash($template_hash)
+
+  $watch_hash = {
+    template => [delete_undef_values($template_hash)]
   }
 
   file { "${consul_template::config_dir}/templates/${name}.ctmpl":
@@ -40,7 +46,7 @@ define consul_template::watch (
     mode    => $consul_template::config_mode,
     content => template($template),
   }->
-  file { "${consul_template::config_dir}/watch_${name}.json":
+  file { "${consul_template::config_dir}/config/watch_${name}.json":
     ensure  => $ensure,
     owner   => $consul_template::user,
     group   => $consul_template::group,

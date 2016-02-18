@@ -32,7 +32,7 @@ describe 'consul_template::watch', :type => :define do
       :template    => 'consul_template_spec/test_template',
       :destination => '/var/my_file', 
     }}
-    it { should contain_file('/etc/consul-template/watch_example.json') \
+    it { should contain_file('/etc/consul-template/config/watch_example.json') \
       .with_content(/"source" *: *"\/etc\/consul-template\/templates\/example.ctmpl"/) \
       .with_content(/"destination" *: *"\/var\/my_file"/) 
     }
@@ -43,14 +43,14 @@ describe 'consul_template::watch', :type => :define do
       :template    => 'consul_template_spec/test_template',
       :destination => '/var/my_file',
       :command     => 'reload',
-      :perms       => 0777,
+      :perms       => 777,
       :backup      => true,
     }}
-    it { should contain_file('/etc/consul-template/watch_example.json') \
+    it { should contain_file('/etc/consul-template/config/watch_example.json') \
       .with_content(/"source" *: *"\/etc\/consul-template\/templates\/example.ctmpl"/) \
       .with_content(/"destination" *: *"\/var\/my_file"/) \
       .with_content(/"command" *: *"reload"/) \
-      .with_content(/"perms" *: *511/) \
+      .with_content(/"perms" *: *777/) \
       .with_content(/"backup" *: *true/)
     }
   end

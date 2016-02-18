@@ -26,11 +26,18 @@ describe 'consul_template' do
   end
 
   context 'by default, location should be localhost' do
-    it { should contain_file('consul-template config.json').with_content(/"consul":"localhost:8500"/) }
+    it { should contain_file('consul-template config.json') \
+      .with_content(/"consul":"localhost:8500"/) \
+      .with(
+        'ensure'  => 'present',
+        'path'    => '/etc/consul-template/config/config.json'
+      )
+    }
   end
 
   context 'directories should be created' do
     it { should contain_file('/etc/consul-template').with(:ensure => 'directory') }
+    it { should contain_file('/etc/consul-template/config').with(:ensure => 'directory') }
     it { should contain_file('/etc/consul-template/templates').with(:ensure => 'directory') }
   end
 
