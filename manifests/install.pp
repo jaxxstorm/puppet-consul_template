@@ -2,15 +2,6 @@
 #
 class consul_template::install {
 
-  if ! empty($consul_template::data_dir) {
-    file { $consul_template::data_dir:
-      ensure => 'directory',
-      owner  => $consul_template::user,
-      group  => $consul_template::group,
-      mode   => '0755',
-    }
-  }
-
   if $consul_template::install_method == 'url' {
 
     include staging
@@ -35,6 +26,7 @@ class consul_template::install {
         mode  => '0555';
       "${consul_template::bin_dir}/consul-template":
         ensure => link,
+        notify => $consul_template::notify_service,
         target => "${::staging::path}/consul-template-${consul_template::version}/consul-template";
     }
 

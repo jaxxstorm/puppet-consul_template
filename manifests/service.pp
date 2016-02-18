@@ -5,11 +5,11 @@
 #
 class consul_template::service {
 
-  service { 'consul-template':
-    ensure => $consul_template::service_ensure,
-    enable => $consul_template::service_enable,
-    name   => 'consul-template',
+  if $consul_template::manage_service == true {
+    service { 'consul-template':
+      ensure => $consul_template::service_ensure,
+      enable => $consul_template::service_enable,
+      name   => 'consul-template',
+    }
   }
-
-
 }
