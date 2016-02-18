@@ -26,21 +26,20 @@ set to 'package', its installed using the system package manager.
 - `package_name` **Default**: consul-template. Name of package to install
 - `package_ensure` **Default**: latest.
 - `config_dir` **Default**: /etc/consul-template. Path to store the consul-template configuration
-- `extra_options` Default: ''. Extra options to be bassed to the consul-template agent. See https://github.com/hashicorp/consul-template#options
+- `extra_options` Default: ''. Extra options to be passed to the consul-template daemon. See https://github.com/hashicorp/consul-template#options. config_hash is preferred.
 - `service_enable` Default: true.
 - `service_ensure` Default: running.
+- `restart_on_change` Default: true. Whether to restart the consul agent when config changes are made
+- `manage_service` Default: true. Whether to manage the service with puppet, or let something else do it
 - `user` Default: consul-template.
 - `group` Default: consul-template.
 - `manage_user` Default: false. Module handles creating the user.
 - `manage_group` Default: false. Module handles creating the group.
-- `consul_host` Default: localhost. Hostanme of consul agent to query
-- `consul_port` Default: 8500. Port number the API is running on
-- `consul_token` Default: ''. ACL token to use when querying consul
-- `consul_retry` Default: 10s. Time in seconds to wait before retrying consul requests
-- `consul_wait` Default: undef. Min:Max time to wait before consul-template renders a new template to disk and triggers refresh. Specified in the format min:max according to [Go time duration format](http://golang.org/pkg/time/#ParseDuration)
-- `consul_max_stale` Default: undef. The maximum staleness of a query. If specified, Consul will distribute work among all servers instead of just the leader.
 - `init_style` Init style to use for consul-template service.
 - `log_level` Default: info. Logging level to use for consul-template service. Can be 'debug', 'warn', 'err', 'info'
+- `config_hash` Default: {}. A hash of configuration options for consul-template. See https://github.com/hashicorp/consul-template#options
+- `pretty_config` Default: false. Whether to pretty up the config json.
+- `pretty_config_indent` Default: 4. How much indentation on the config json.
 
 
 
@@ -51,14 +50,30 @@ The simplest way to use this module is:
 include consul_template
 ```
 
-Or to specify parameters:
+By default the only option that will be set will be the `consul` option, which defaults to
+`localhost:8500`
+
+You can specify other config options using the `config_hash` parameter:
 ```puppet
 class { 'consul_template':
-    service_enable   => false
-    log_level        => 'debug',
-    init_style       => 'upstart',
-    consul_wait      => '5s:30s',
-    consul_max_stale => '1s'
+    service_enable   => false,
+    config_hash => {
+       consul     => 'consul.service.discover:8500',
+       retry      => '10s',
+       log_level  => 'warn',
+       ssl => {
+         enabled  => true,
+         verify   => false,
+         cert     => '/path/to/client/cert.pem'
+       }
+       vault => {
+         address => 'https://vault.service.consul:8200',
+         token   => '1234567890'
+         ssl => {
+           enabled => true,
+         }
+       }
+    }
 }
 ```
 
