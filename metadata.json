@@ -1,12 +1,12 @@
 {
-  "name": "gdhbashton-consul_template",
+  "name": "jaxxstorm-consul_template",
   "version": "0.2.4",
-  "author": "gdhbashton",
+  "author": "jaxxstorm",
   "summary": "Install and manage Consul Template and its jobs",
   "license": "Apache-2.0",
-  "source": "https://github.com/gdhbashton/puppet-consul_template",
-  "project_page": "https://github.com/gdhbashton/puppet-consul_template",
-  "issues_url": "https://github.com/gdhbashton/puppet-consul_template/issues",
+  "source": "https://github.com/jaxxstorm/puppet-consul_template",
+  "project_page": "https://github.com/jaxxstorm/puppet-consul_template",
+  "issues_url": "https://github.com/jaxxstorm/puppet-consul_template/issues",
   "operatingsystem_support": [
     {
     "operatingsystem":"RedHat",
