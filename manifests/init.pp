@@ -105,6 +105,10 @@ class consul_template (
   $config_hash_real = deep_merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
 
+  if ! $config_hash_real['consul'] {
+    $config_hash_real['consul'] = 'localhost:8500'
+  }
+
   $real_download_url = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
 
   if $watches {

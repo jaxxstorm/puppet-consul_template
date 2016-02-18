@@ -21,6 +21,10 @@ describe 'consul_template' do
     it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
+  context 'by default, location should be localhost' do
+    it { should contain_file('consul-template config.json').with_content(/"consul":"localhost:8500"/) }
+  end
+
   context 'When not specifying whether to purge config' do
     it { should contain_file('/etc/consul-template').with(:purge => true,:recurse => true) }
   end
