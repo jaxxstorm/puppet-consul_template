@@ -40,6 +40,10 @@
 # [*manage_group*]
 #   Group is managed by this module. Defaults to `false`.
 #
+# [*restart_on_change*]
+#   Determines whethere to restart consul template when $config_hash changes
+#   Defaults to tru
+#
 # [*watches*]
 #   A hash of watches - allows greater Hiera integration. Defaults to `{}`.
 #
@@ -69,6 +73,8 @@ class consul_template (
   $extra_options          = '',
   $service_enable         = true,
   $service_ensure         = 'running',
+  $restart_on_change      = true,
+  $manage_service         = true,
   $init_style             = $consul_template::params::init_style,
   $log_level              = $consul_template::params::log_level,
   $logrotate_compress     = 'nocompress',
@@ -91,6 +97,8 @@ class consul_template (
   validate_string($group)
   validate_bool($manage_user)
   validate_bool($manage_group)
+  validate_bool($manage_service)
+  validate_bool($restart_on_change)
   validate_hash($watches)
   validate_hash($config_hash)
 
@@ -109,12 +117,17 @@ class consul_template (
     create_resources(consul_template::watch, $watches)
   }
 
+  $notify_service = $restart_on_change ? {
+    true    => Class['consul_template::service'],
+    default => undef,
+  }
   anchor { '::consul_template::begin': } ->
   class { '::consul_template::install': } ->
   class { '::consul_template::config':
     config_hash  => $config_hash_real,
     purge        => $purge_config_dir,
-  } ~>
+    notify       => $notify_service,
+  } ->
   class { '::consul_template::service': } ->
   anchor { '::consul_template::end': }
 
