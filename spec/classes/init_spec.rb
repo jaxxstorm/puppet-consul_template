@@ -29,8 +29,14 @@ describe 'consul_template' do
     it { should contain_file('consul-template config.json').with_content(/"consul":"localhost:8500"/) }
   end
 
+  context 'directories should be created' do
+    it { should contain_file('/etc/consul-template').with(:ensure => 'directory') }
+    it { should contain_file('/etc/consul-template/templates').with(:ensure => 'directory') }
+  end
+
   context 'When not specifying whether to purge config' do
     it { should contain_file('/etc/consul-template').with(:purge => true,:recurse => true) }
+    it { should contain_file('/etc/consul-template/templates').with(:purge => true,:recurse => true) }
   end
 
   context 'When passing a non-bool as purge_config_dir' do
