@@ -1,6 +1,6 @@
 #consul_template for Puppet
 
-[![Build Status](https://travis-ci.org/jaxxstorm/puppet-consul.svg?branch=master)](https://travis-ci.org/jaxxstorm/puppet-consul)
+[![Build Status](https://travis-ci.org/jaxxstorm/puppet-consul_template.svg?branch=master)](https://travis-ci.org/jaxxstorm/puppet-consul_template)
 
 ### Important Note
 This module has been forked from [gdhbaston's](https://github.com/gdhbashton/puppet-consul_template) and makes lots of changes. I wouldn't recommend switching without serious testing
