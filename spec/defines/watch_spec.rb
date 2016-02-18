@@ -44,9 +44,7 @@ describe 'consul_template::watch', :type => :define do
 
         it { is_expected.to compile.with_all_deps }
 
-        it { is_expected.to contain_file('/etc/consul-template/test_watcher.ctmpl').with(
-            :content => /^bar$/,
-        )}
+        it { is_expected.to contain_file('/etc/consul-template/test_watcher.ctmpl').with(:content => /^bar$/)}
         it { is_expected.to contain_concat__fragment('test_watcher.ctmpl') }
 
       end

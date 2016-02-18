@@ -70,6 +70,7 @@ class consul_template (
   $package_name           = $consul_template::params::package_name,
   $package_ensure         = $consul_template::params::package_ensure,
   $config_dir             = '/etc/consul-template',
+  $consul                 = 'localhost:8500',
   $extra_options          = '',
   $service_enable         = true,
   $service_ensure         = 'running',
@@ -87,7 +88,7 @@ class consul_template (
   $manage_group           = $consul_template::params::manage_group,
   $watches                = {},
   $config_hash            = {},
-  $config_mode            = $consul::params::config_mode,
+  $config_defaults        = {},
   $pretty_config          = false,
   $pretty_config_indent   = 4,
 ) inherits ::consul_template::params {
@@ -102,13 +103,12 @@ class consul_template (
   validate_hash($watches)
   validate_hash($config_hash)
 
-  $config_hash_real = deep_merge($config_defaults, $config_hash)
+  $config_hash_defaults = { 'consul' => $consul }
+  # Rightmost hash wins
+  # So if consul exists in $config_hash, we override it
+  $config_hash_real = deep_merge($config_hash_defaults, $config_defaults, $config_hash) 
   validate_hash($config_hash_real)
-
-  if ! $config_hash_real['consul'] {
-    $config_hash_real['consul'] = 'localhost:8500'
-  }
-
+  
   $real_download_url = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
 
   if $watches {

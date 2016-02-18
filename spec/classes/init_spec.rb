@@ -4,11 +4,15 @@ describe 'consul_template' do
   
   RSpec.configure do |c|
     c.default_facts = {
-      :architecture           => 'x86_64',
-      :operatingsystem        => 'Ubuntu',
-      :osfamily               => 'Debian',
-      :operatingsystemrelease => '10.04',
-      :kernel                 => 'Linux',
+      :architecture               => 'x86_64',
+      :operatingsystem            => 'Ubuntu',
+      :osfamily                   => 'Debian',
+      :operatingsystemrelease     => '10.04',
+      :operatingsystemmajrelease  => '10.04',
+      :kernel                     => 'Linux',
+      :lsbdistrelease             => '10.04',
+      :staging_http_get           => 'curl',
+      :path                       => '/usr/bin:/bin:/usr/sbin:/sbin',
     }
   end
 
@@ -122,7 +126,7 @@ describe 'consul_template' do
   context "On a redhat 7 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
-      :operatingsystemrelease => '7.0'
+      :operatingsystemmajrelease => '7'
     }}
 
     it { should contain_class('consul_template').with_init_style('systemd') }
@@ -148,6 +152,14 @@ describe 'consul_template' do
     it { should contain_file('/opt/staging').with(:ensure => 'directory') }
     it { should contain_file('/opt/staging/consul_template').with(:ensure => 'directory') }
     it { should contain_file('/usr/local/bin/consul-template').that_notifies('Class[consul_template::service]') }
+  end
+
+  context "Specifying consul location" do
+    let(:params) {{
+      :config_hash =>
+        { 'consul' => 'my.consul.service:8500' }
+    }}
+    it { should contain_file('consul-template config.json').with_content(/"consul":"my.consul.service:8500"/) }
   end
 
   
