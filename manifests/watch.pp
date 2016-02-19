@@ -7,6 +7,7 @@ define consul_template::watch (
   $ensure     = present,
   $template,
   $destination,
+  $source = undef,
   $command = undef,
   $perms = undef,
   $backup = undef,
@@ -25,9 +26,15 @@ define consul_template::watch (
     validate_bool($backup)
   }
 
+  if (! $source) {
+    $source_real = "${consul_template::config_dir}/templates/${name}.ctmpl"
+  } else {
+    $source_real = $source
+  }
+
 
   $template_hash = {
-    'source'      =>  "${consul_template::config_dir}/templates/${name}.ctmpl",
+    'source'      =>  $source_real,
     'destination' =>  $destination,
     'command'     =>  $command,
     'perms'       =>  $perms,
@@ -39,7 +46,7 @@ define consul_template::watch (
     template => [delete_undef_values($template_hash)]
   }
 
-  file { "${consul_template::config_dir}/templates/${name}.ctmpl":
+  file { $source_real:
     ensure  => $ensure,
     owner   => $consul_template::user,
     group   => $consul_template::group,
