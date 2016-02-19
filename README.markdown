@@ -107,6 +107,10 @@ Depends on the JSON gem, or a modern ruby.
 ##Development
 See the [contributing guide](CONTRIBUTING.md)
 
-Open an [issue](https://github.com/gdhbashton/puppet-consul_template/issues) or
-[fork](https://github.com/gdhbashton/puppet-consul_template/fork) and open a
-[Pull Request](https://github.com/gdhbashton/puppet-consul_template/pulls)
+Open an [issue](https://github.com/jaxxstorm/puppet-consul_template/issues) or
+[fork](https://github.com/jaxxstorm/puppet-consul_template/fork) and open a
+[Pull Request](https://github.com/jaxxstorm/puppet-consul_template/pulls)
+
+##Acknowledgements
+Massive thanks to [@gdhbaston](https://github.com/gdhbashton) for the original work writing this module.
+[@solarkennedy](https://github.com/solarkennedy) for the [puppet-consul](https://github.com/solarkennedy/puppet-consul) which this module borrows heavily from.
