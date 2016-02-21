@@ -38,6 +38,15 @@ describe 'consul_template::watch', :type => :define do
     }
   end
 
+  context 'specifying a source path' do
+    let(:params) {{
+      :template    => 'consul_template_spec/test_template',
+      :destination => '/var/my_file',
+      :source      => '/var/my_source_file',
+    }}
+    it { should contain_file('/var/my_source_file').with(:ensure => 'present') }
+  end
+
   context 'with additional options' do
     let(:params) {{
       :template    => 'consul_template_spec/test_template',
