@@ -82,7 +82,8 @@ module JSON
         else
           # Should be a string
           # keep string integers unquoted
-          (obj =~ /\A[-]?\d+\z/) ? obj : obj.to_json
+          #(obj =~ /\A[-]?\d+\z/) ? obj : obj.to_json
+          obj.to_json # https://github.com/hashicorp/consul-template/issues/548
       end
     end
 
