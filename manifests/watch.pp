@@ -26,6 +26,11 @@ define consul_template::watch (
     validate_bool($backup)
   }
 
+  if ($perms) {
+    validate_string($perms)
+    validate_re($perms, '[0-7]{4}', 'Must be a valid Unix file permission')
+  }
+
   if (! $source) {
     $source_real = "${consul_template::config_dir}/templates/${name}.ctmpl"
   } else {
